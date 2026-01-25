@@ -61,8 +61,8 @@
  extern void clearResponse(void);
 <#
 
-(define-foreign-variable wsResponse  (c-pointer char) "wsResponse")
-;(define-foreign-variable wsResponse  c-string "wsResponse")
+;(define-foreign-variable wsResponse  (c-pointer char) "wsResponse")
+(define-foreign-variable wsResponse  c-string "wsResponse")
 
 (define clearResponse
 (foreign-lambda void "clearResponse")
@@ -91,7 +91,9 @@ x)
 (let loop ()
   (if (not (equal? wsResponse #f))
     (begin 
-      (runthis grid2)
+      ;(runthis grid2)
+      ;(getbuttons wsResponse)
+      (print wsResponse)
       (clearResponse)
     )
   )
@@ -104,4 +106,22 @@ x)
 
 ; )
 
+(define (getbuttons msg)
+        (cond 
+            ((string=? msg "button1")(print "1"))
+            ((string=? msg "button2")(print "1"))
+            ((string=? msg "button3")(print "1"))
+            ((string=? msg "button4")(print "1"))
+            ((string=? msg "button5")(print "1"))
+            ((string=? msg "button5")(print "1"))))
+
 (return-to-host)
+
+(define (getbuttons fd msg size type)
+        (cond 
+            ((string=? msg "button1")(print "1"))
+            ((string=? msg "button2")(print "1"))
+            ((string=? msg "button3")(print "1"))
+            ((string=? msg "button4")(print "1"))
+            ((string=? msg "button5")(print "1"))
+            ((string=? msg "button5")(print "1"))))
