@@ -1,0 +1,1 @@
+csc -embedded wsrv33.c wsrvscm.scm ws.c wsServerLib.o -o websocketTest
