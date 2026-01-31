@@ -6,12 +6,13 @@
 #include <unistd.h>
 #include "ws.h"
 #include <assert.h>
+#include <stdbool.h>
 
 void clearResponse(void);
 char *wsResponse = NULL;
 static char buffer[256];
 static C_word k;
-
+int globalfd=-1;
 
 void clearResponse(void)
 {
@@ -62,8 +63,7 @@ void onmessage(int fd, const unsigned char *msg, uint64_t size, int type)
 	 */
 	if (wsResponse == NULL)
 	{
-		wsResponse=(char *)malloc(MESSAGE_LENGTH);
-		
+		wsResponse=(char *)malloc(MESSAGE_LENGTH);		
 	}
 	if (wsResponse == NULL)
 	{
@@ -72,7 +72,8 @@ void onmessage(int fd, const unsigned char *msg, uint64_t size, int type)
 	}
 	strcpy(wsResponse, msg);
 	// // printf("%s",wsResponse);
-	ws_sendframe(fd, (char *)msg, size, true, type);
+	globalfd=fd;
+	//ws_sendframe(fd, (char *)msg, size, true, type);
 }
 
 int main(void)

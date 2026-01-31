@@ -10,7 +10,12 @@
   (srfi 69)
   (srfi 13)
   ;(schemepunk json)
+  (medea)
+  ;(json)
+  ;(abnf)
   (chicken process-context) srfi-18)
+
+
 
 (load "lib/cells.scm")
 (load "lib/175.scm")
@@ -24,10 +29,10 @@
 
 ;(define (identity x) x)
 
-; (define (grid-string grid)    
-;   (json->string  (list->vector `((("type" . "grid")) (("num" . ,(identity grid)))))))
-(define grid-string     
-  "{{\"type\":\"grid\"}{\"num\":\"103070002000000040090005001020100503007000200405002060200800030050000000800020709\"}}")
+ ;(define (grid-string grid)    
+  ; (json->string  (list->vector `((("type" . "grid")) (("num" . ,(identity grid)))))))
+;(define grid-string     
+ ; "{{\"type\":\"grid\"}{\"num\":\"103070002000000040090005001020100503007000200405002060200800030050000000800020709\"}}")
   
  ; {{"type" : "grid"}{"num" : "103070002000000040090005001020100503007000200405002060200800030050000000800020709"}}
 
@@ -71,14 +76,37 @@
 #>
  extern char* wsResponse; 
  extern void clearResponse(void);
+ extern  int ws_sendframe_txt(int fd, const char *msg, bool broadcast);
+ extern int globalfd;
 <#
 
 ;(define-foreign-variable wsResponse  (c-pointer char) "wsResponse")
 (define-foreign-variable wsResponse  c-string "wsResponse")
+(define-foreign-variable globalfd  int "globalfd")
 
 (define clearResponse
 (foreign-lambda void "clearResponse")
 )
+
+(define ws_send_txt (foreign-lambda* 
+    int ((int fd) (c-string msg) (bool broadcast))
+     "ws_sendframe_txt(fd, msg, broadcast);"))
+
+
+ #| 
+	   (define process-string
+  (foreign-lambda* void ((c-pointer char) wsResponse)
+    "/* C code to handle the string pointer */
+     if (wsResponse == NULL) {
+       /* handle NULL case */
+     } else {
+       /* handle non-NULL case */
+        free(wsResponse);
+        //wsResponse = NULL;
+     }"))
+ |#
+
+
 
 ; (define (runthis grid)
 ;   (print "2\n")
@@ -92,6 +120,15 @@
 ;   (print-grid grid)
 ;   ;(print-find-all-possibles-table)
 ; )
+;(json->string "{{\"type\":\"grid\"}{\"num\":\"103070002000000040090005001020100503007000200405002060200800030050000000800020709\"}}"
+;(define (grid-string grid)    
+;  (json->string  (list->vector `((("type" . "grid")) (("num" . ,(identity grid)))))))
+
+(define type (string->symbol "type"))
+(define num (string->symbol "num"))
+
+(define (grid-string grid)    
+  (json->string  (list->vector `(((type . "grid")) ((num . ,(identity grid)))))))
 
 (define null-string-val #f)
 
@@ -104,7 +141,8 @@
       ;(getbuttons wsResponse)
       ;(processString wsResponse)
       ;(print wsResponse)
-      (ws_send_txt "{{\"type\":\"grid\"}{\"num\":\"103070002000000040090005001020100503007000200405002060200800030050000000800020709\"}}" 4)
+      
+      (ws_send_txt globalfd (grid-string grid2) #f)
       (clearResponse)
     )
   )
@@ -125,7 +163,7 @@
              ((string=? msg "button1")(solve (string-copy grid1)))
              ((string=? msg "button2")(solve (string-copy grid2)))
              ((string=? msg "button3")(solve (string-copy grid3)))
-             ((string=? msg "button4")(ws_send_txt "{{\"type\":\"grid\"}{\"num\":\"103070002000000040090005001020100503007000200405002060200800030050000000800020709\"}}" gblFd))
+             ((string=? msg "button4")(ws_send_txt globalfd "{{\"type\":\"grid\"}{\"num\":\"103070002000000040090005001020100503007000200405002060200800030050000000800020709\"}}" #f))
             ; ((string=? msg "button5")(ws_send_txt (grid-string grid2) gblFd))
             ; ((string=? msg "button6")(ws_send_txt (grid-string grid3) gblFd))
             ))
