@@ -27,24 +27,28 @@
 (load "lib/175.scm")
 
 
+
+(define clearResponse
+(foreign-lambda void "clearResponse"))
+
+(define ws_send_txt (foreign-lambda* 
+    int ((int fd) (c-string msg) (bool broadcast))
+     "ws_sendframe_txt(fd, msg, broadcast);"))
+
 (define-foreign-variable wsResponse  c-string "wsResponse")
 (define-foreign-variable globalfd  int "globalfd")
-
+(define type (string->symbol "type"))
+(define num (string->symbol "num"))
 (define range08 (numeric-range 0  8))
+(define null-string-val #f)
+
+(define (grid->string grid)    
+  (json->string  (list->vector `(((type . "grid")) ((num . ,(identity grid)))))))
+
+
 (define grid1 "530070000600195000098000060800060003400803001700020006060000280000419005000080079")
 (define grid2 "032010000801000003000006400200005000060100078000200000500907060010000000008000930")
 (define grid3 "103070002000000040090005001020100503007000200405002060200800030050000000800020709")
-
-
-
-;(define (identity x) x)
-
- ;(define (grid-string grid)    
-  ; (json->string  (list->vector `((("type" . "grid")) (("num" . ,(identity grid)))))))
-;(define grid-string     
- ; "{{\"type\":\"grid\"}{\"num\":\"103070002000000040090005001020100503007000200405002060200800030050000000800020709\"}}")
-  
- ; {{"type" : "grid"}{"num" : "103070002000000040090005001020100503007000200405002060200800030050000000800020709"}}
 
 (define-syntax let/ec 
   (syntax-rules ()
@@ -52,14 +56,6 @@
      (call-with-current-continuation
       (lambda (return)
         body ...)))))
-
-(define for (lambda (row end func)
-      (let loop ((index row))
-        (if (> index end) #t
-          (begin
-            (func index)
-            (loop (+ index 1)))))))
-
 
 (define (solve grid)
   (let/ec return    
@@ -77,7 +73,7 @@
                  (num-loop (+ 1 num)))                                              
                  (return 0)))))
     (numeric-range 0  9)))(numeric-range 0  9))
-  (ws_send_txt globalfd (grid-string grid) #f)
+  (ws_send_txt globalfd (grid->string grid) #f)
   (print-grid grid)))
 
 
@@ -86,47 +82,15 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-
-(define clearResponse
-(foreign-lambda void "clearResponse")
-)
-
-(define ws_send_txt (foreign-lambda* 
-    int ((int fd) (c-string msg) (bool broadcast))
-     "ws_sendframe_txt(fd, msg, broadcast);"))
-
-
- #| 
-	   (define process-string
-  (foreign-lambda* void ((c-pointer char) wsResponse)
-    "/* C code to handle the string pointer */
-     if (wsResponse == NULL) {
-       /* handle NULL case */
-     } else {
-       /* handle non-NULL case */
-        free(wsResponse);
-        //wsResponse = NULL;
-     }"))
- |#
-
-
-
  (define (runthis grid)
    (print "2\n")
    (init-cells-affected-hash-table)  
-   (init-find-all-possibles-table grid)
+   (init-find-all-possibles-hash-table grid)
    (solve (string-copy grid))   
    ;(range->list (split grid))
    (print-grid grid)
-   ;(print-find-all-possibles-table)
- )
-(define type (string->symbol "type"))
-(define num (string->symbol "num"))
-
-(define (grid-string grid)    
-  (json->string  (list->vector `(((type . "grid")) ((num . ,(identity grid)))))))
-
-(define null-string-val #f)
+   (print-find-all-possibles-hash-table)
+   )
 
 (define (start)
 
@@ -147,12 +111,12 @@
 
 (define (processString msg)
   (cond 
-    ((string=? msg "button1")(runthis grid2))
-    ((string=? msg "button2")(solve (string-copy grid2)))
-    ((string=? msg "button3")(solve (string-copy grid3)))
-    ((string=? msg "button4")(ws_send_txt globalfd (grid-string grid1) #f))
-    ((string=? msg "button5")(ws_send_txt globalfd (grid-string grid2) #f))
-    ((string=? msg "button6")(ws_send_txt globalfd (grid-string grid3) #f))))
+    ((string=? msg "button1")(runthis grid1))
+    ((string=? msg "button2")(runthis grid2))
+    ((string=? msg "button3")(runthis grid3))
+    ((string=? msg "button4")(ws_send_txt globalfd (grid->string grid1) #f))
+    ((string=? msg "button5")(ws_send_txt globalfd (grid->string grid2) #f))
+    ((string=? msg "button6")(ws_send_txt globalfd (grid->string grid3) #f))))
 ;;;;;;;
 
 
