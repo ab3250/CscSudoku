@@ -30,6 +30,7 @@ void onopen(int fd)
 	printf("Connection opened, client: %d | addr: %s\n", fd, cli);
 #endif
 	free(cli);	
+	globalfd=fd;
 }
 
 void onclose(int fd)
@@ -72,7 +73,7 @@ void onmessage(int fd, const unsigned char *msg, uint64_t size, int type)
 	}
 	strcpy(wsResponse, msg);
 	// // printf("%s",wsResponse);
-	globalfd=fd;
+	
 	//ws_sendframe(fd, (char *)msg, size, true, type);
 }
 

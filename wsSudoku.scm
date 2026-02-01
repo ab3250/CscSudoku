@@ -1,3 +1,11 @@
+#>
+ extern char* wsResponse; 
+ extern void clearResponse(void);
+ extern  int ws_sendframe_txt(int fd, const char *msg, bool broadcast);
+ extern int globalfd;
+<#
+
+
 (import
   (chicken foreign)    
   (chicken base)
@@ -15,10 +23,12 @@
   ;(abnf)
   (chicken process-context) srfi-18)
 
-
-
 (load "lib/cells.scm")
 (load "lib/175.scm")
+
+
+(define-foreign-variable wsResponse  c-string "wsResponse")
+(define-foreign-variable globalfd  int "globalfd")
 
 (define range08 (numeric-range 0  8))
 (define grid1 "530070000600195000098000060800060003400803001700020006060000280000419005000080079")
@@ -67,22 +77,15 @@
                  (num-loop (+ 1 num)))                                              
                  (return 0)))))
     (numeric-range 0  9)))(numeric-range 0  9))
+  (ws_send_txt globalfd (grid-string grid) #f)
   (print-grid grid)))
 
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-#>
- extern char* wsResponse; 
- extern void clearResponse(void);
- extern  int ws_sendframe_txt(int fd, const char *msg, bool broadcast);
- extern int globalfd;
-<#
 
-;(define-foreign-variable wsResponse  (c-pointer char) "wsResponse")
-(define-foreign-variable wsResponse  c-string "wsResponse")
-(define-foreign-variable globalfd  int "globalfd")
+
 
 (define clearResponse
 (foreign-lambda void "clearResponse")
@@ -108,22 +111,15 @@
 
 
 
-; (define (runthis grid)
-;   (print "2\n")
-;   (init-cells-affected-hash-table)
-;    (print "3\n")
-;   ;(init-find-all-possibles-table grid)
-;    (print "4\n")
-;   (solve (string-copy grid))
-;    (print "5\n")
-;   ;(range->list (split grid))
-;   (print-grid grid)
-;   ;(print-find-all-possibles-table)
-; )
-;(json->string "{{\"type\":\"grid\"}{\"num\":\"103070002000000040090005001020100503007000200405002060200800030050000000800020709\"}}"
-;(define (grid-string grid)    
-;  (json->string  (list->vector `((("type" . "grid")) (("num" . ,(identity grid)))))))
-
+ (define (runthis grid)
+   (print "2\n")
+   (init-cells-affected-hash-table)  
+   (init-find-all-possibles-table grid)
+   (solve (string-copy grid))   
+   ;(range->list (split grid))
+   (print-grid grid)
+   ;(print-find-all-possibles-table)
+ )
 (define type (string->symbol "type"))
 (define num (string->symbol "num"))
 
@@ -139,35 +135,25 @@
     (begin 
       ;(runthis grid2)
       ;(getbuttons wsResponse)
-      ;(processString wsResponse)
+      (processString wsResponse)
       ;(print wsResponse)
       
-      (ws_send_txt globalfd (grid-string grid2) #f)
+      ;
       (clearResponse)
     )
   )
   (thread-sleep! .01)
 (loop)))
 
-
-; (define (start)
-; (runthis grid2)
-
-; )
-
-
-;(solve (string-copy grid2))
-
- (define (processString msg)
-         (cond 
-             ((string=? msg "button1")(solve (string-copy grid1)))
-             ((string=? msg "button2")(solve (string-copy grid2)))
-             ((string=? msg "button3")(solve (string-copy grid3)))
-             ((string=? msg "button4")(ws_send_txt globalfd "{{\"type\":\"grid\"}{\"num\":\"103070002000000040090005001020100503007000200405002060200800030050000000800020709\"}}" #f))
-            ; ((string=? msg "button5")(ws_send_txt (grid-string grid2) gblFd))
-            ; ((string=? msg "button6")(ws_send_txt (grid-string grid3) gblFd))
-            ))
-; ;;;;;;
+(define (processString msg)
+  (cond 
+    ((string=? msg "button1")(runthis grid2))
+    ((string=? msg "button2")(solve (string-copy grid2)))
+    ((string=? msg "button3")(solve (string-copy grid3)))
+    ((string=? msg "button4")(ws_send_txt globalfd (grid-string grid1) #f))
+    ((string=? msg "button5")(ws_send_txt globalfd (grid-string grid2) #f))
+    ((string=? msg "button6")(ws_send_txt globalfd (grid-string grid3) #f))))
+;;;;;;;
 
 
 

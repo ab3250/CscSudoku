@@ -1,10 +1,13 @@
 (import
   (chicken base)
+  (chicken platform)
+  (scheme)
   (scheme)
   (srfi 196)
   (srfi 158)
   (srfi 130)
-  (srfi 69))
+  (srfi 69)
+  (chicken foreign) )
 
 (load "lib/175.scm")
 
@@ -85,26 +88,33 @@
       (if (= cell# 26) #t (loop (+ cell# 1))))))     
 
 
-(define cells-affected-hash-table (make-hash-table equal?)) ; Create a hash table using equal? for key comparison
+ (define cells-affected-hash-table (make-hash-table #:test equal? #:size 9)) ; Create a hash table using equal? for key comparison
 
-(define find-all-possibles-table (make-hash-table equal?))
+ (define find-all-possibles-table (make-hash-table #:test equal? #:size 81))
 
-(define (init-cells-affected-hash-table)
-  (range-map (lambda (cell) 
-    (let* ((row-col-pair (cell->row-col cell)) (row (car row-col-pair)) (col (cdr row-col-pair) ))
-      (hash-table-set! cells-affected-hash-table cell (append (get-row-cells row) (get-col-cells col) (get-box-cells row col))))
-  )(numeric-range 0 81)))
+ (define (init-cells-affected-hash-table)
+   (range-map (lambda (cell) 
+     (let* ((row-col-pair (cell->row-col cell)) (row (car row-col-pair)) (col (cdr row-col-pair) ))
+       (hash-table-set! cells-affected-hash-table cell (append (get-row-cells row) (get-col-cells col) (get-box-cells row col))))
+   )(numeric-range 0 81)))
 
-(define (possible? row col num grid)   
-        (check (get-cell-list-content  (hash-table-ref cells-affected-hash-table (row-col->cell row col)) grid) num grid))
+  (define (possible? row col num grid)   
+          (check (get-cell-list-content  (hash-table-ref cells-affected-hash-table (row-col->cell row col)) grid) num grid))
+
+;(define (possible? row col num grid)  #t)
+
+  ; (define (init-find-all-possibles-table grid)  
+  ;     (range-map (lambda (cell)
+  ;       (begin 
+  ;         (range-map (lambda (num)
+  ;           (if (check (get-cell-list-content  (hash-table-ref cells-affected-hash-table cell grid) num grid))
+  ;           (hash-table-set! find-all-possibles-table cell num))))          
+  ;         (numeric-range 1 10)              
+  ;     )(numeric-range 0 81))))
+
 
 (define (init-find-all-possibles-table grid)  
-    (range-map (lambda (cells)
-         (hash-table-set! find-all-possibles-table cells (range->list (range-filter  (lambda (nums);;;;;     
-          (check (get-cell-list-content  (hash-table-ref cells-affected-hash-table cells) grid) nums grid)
-;;;;;
-        )(numeric-range 1 10))) ))         
-        
-         (numeric-range 0 81)))
-
-
+    (range-map (lambda (cell)
+        (range-map (lambda(num) 
+          (if (check (get-cell-list-content  (hash-table-ref cells-affected-hash-table cell) grid) num grid)
+         (hash-table-set! find-all-possibles-table cell num)))(numeric-range 1 10)))(numeric-range 0 81)))
