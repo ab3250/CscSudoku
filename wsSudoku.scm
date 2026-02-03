@@ -83,13 +83,12 @@
 
 
  (define (runthis grid)
-   (print "2\n")
-   (init-cells-affected-hash-table)  
-   (init-find-all-possibles-hash-table grid)
+   (fill-cells-affected-hash-table)  
+   (fill-all-possibles-for-cell-hash-table grid)
    (solve (string-copy grid))   
    ;(range->list (split grid))
    (print-grid grid)
-   (print-find-all-possibles-hash-table)
+   (print-all-possibles-for-cell-hash-table)
    )
 
 (define (start)
