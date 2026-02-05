@@ -17,10 +17,7 @@
   (srfi 158)  
   (srfi 69)
   (srfi 13)
-  ;(schemepunk json)
-  (medea)
-  ;(json)
-  ;(abnf)
+  (medea)    
   (chicken process-context) srfi-18)
 
 (load "lib/cells.scm")
@@ -29,7 +26,7 @@
 
 
 (define clearResponse
-(foreign-lambda void "clearResponse"))
+  (foreign-lambda void "clearResponse"))
 
 (define ws_send_txt (foreign-lambda* 
     int ((int fd) (c-string msg) (bool broadcast))
@@ -37,13 +34,12 @@
 
 (define-foreign-variable wsResponse  c-string "wsResponse")
 (define-foreign-variable globalfd  int "globalfd")
-(define type (string->symbol "type"))
-(define num (string->symbol "num"))
-(define range08 (numeric-range 0  8))
 (define null-string-val #f)
 
+
+
 (define (grid->string grid)    
-  (json->string  (list->vector `(((type . "grid")) ((num . ,(identity grid)))))))
+  (json->string  (list->vector `(((,(string->symbol "type") . "grid")) ((,(string->symbol "num") . ,(identity grid)))))))
 
 
 (define grid1 "530070000600195000098000060800060003400803001700020006060000280000419005000080079")
@@ -88,7 +84,10 @@
    (solve (string-copy grid))   
    ;(range->list (split grid))
    (print-grid grid)
-   (print-all-possibles-for-cell-hash-table)
+   ;(makeJSON)
+   (display (print-all-possibles-for-cell-hash-table))
+   (display (possibles->string))
+   (ws_send_txt globalfd (possibles->string) #f)
    )
 
 (define (start)

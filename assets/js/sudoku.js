@@ -48,8 +48,9 @@ let createWs = function (){
 }
 
 function messageHandler(evt){
-  //console.log(evt).toString() //data: '[{"type":"grid"},{"num":"5300700006001950000980000…3400803001700020006060000280000419005000080079"}]'
+ //console.log(evt).toString() //data: '[{"type":"grid"},{"num":"5300700006001950000980000…3400803001700020006060000280000419005000080079"}]'
  const d = JSON.parse(evt.data) 
+ console.log(d[0].type)
   switch (d[0].type){
     case 'grid':   
       const n = d[1].num.toString()     
@@ -74,7 +75,12 @@ function messageHandler(evt){
       Array.from(document.getElementsByTagName('button')).forEach(function (value, i, col) {
         value.disabled = false })
       break
+	case 'poss':
+		console.log(d[1].num[0])
+    console.log(d[1].num[1])
+	break
     default: 
+	break
   }
 }
 
