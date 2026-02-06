@@ -76,8 +76,10 @@ function messageHandler(evt){
         value.disabled = false })
       break
 	case 'poss':
-		console.log(d[1].num[0])
-    console.log(d[1].num[1])
+    const num1 = d[1].num    
+    for (var i = 0; i < num1.length; i++) {
+         console.log(num1[i])
+    }
 	break
     default: 
 	break
