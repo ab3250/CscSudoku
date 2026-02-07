@@ -51,20 +51,27 @@ let createWs = function (){
 function messageHandler(evt){
  //console.log(evt).toString() //data: '[{"type":"grid"},{"num":"5300700006001950000980000…3400803001700020006060000280000419005000080079"}]'
  const d = JSON.parse(evt.data) 
- console.log(d[0].type)
+// console.log(d)
+// console.log(d[0])
+// console.log(d[1])
+// console.log(d[2])
+// console.log(d[3])
+// console.log(d.type)
+
   switch (d[0].type){
-    case 'grid':   
-      const n = d[1].num.toString()     
-      for (var i = 0; i < n.length; i++) {
+    case 'grid': 
+      const gridNumbers =   d[1].num.toString()        
+     //const n = d[1].num.toString()     
+      for (var i = 0; i < gridNumbers.length; i++) {
         const e = document.getElementById("cell-" + i.toString())
        // console.log("cell-" + i.toString())
-        if(n[i] === '0'){
-          //e.innerHTML = getinner(i)
-          console.log (getinner(i))
+        if(gridNumbers[i] === '0'){
+        //  console.log(getinner(d[3].num[i], i))
+          e.innerHTML = getinner(d[3].num[i], i)          
           e.disabled = false
         }
         else{
-        	e.innerHTML=n[i]
+        	e.innerHTML=gridNumbers[i]
         	e.disabled = true
         } 
       }
@@ -111,22 +118,42 @@ function loadWindow (){
 document.addEventListener('DOMContentLoaded', loadWindow, false)
 
 
-function getinner (q){ 
-      console.log(q)
-      i=allCells[q]
+function getinner (possArray,index){       
+      //console.log(i,q)
+      let temp = []
        for (var  j= 1; j < 10; j++) {
           //console.log(i , j, (allCells[i][j-1] !== undefined) ? allCells[i][j-1]: null)
          // if(allCells[i][j-1] !== undefined){
           //  console.log(i , j, (allCells[i].includes(j)? j : null))
-          let triples=(j===3 || j===6 || j === 9)
-          
-        //  console.log( ((j===1)?"<table id=\"cell-" + i + "\">" :"") +
-        //                             "<td id=\"cellInner-" + (j).toString() + "\">" + (allCells[i].includes(j)? j.toString() : "") + "</td>" + 
-        //                             (triples?"</tr><tr>":"") +
-        //                             ((j===9)?"</table>" :""))
-        return (allCells[0][1])
+         let double=(j===3 || j===6 )
+         temp.push((((j===1)?("<table id=\"cellinner-" + index + "\"><tbody><tr>") :"") + 
+                                     "<td id=\"cellInnertd-" + (j).toString() + "\">" + (possArray.includes(j)? j.toString() : "") + "</td>" + 
+                                     ((j===3 || j===6)?"</tr><tr>":"") +
+                                     ((j===9)?"</tr></tbody></table>" :"")) )
+         
+        
+        
        }
+       console.log(temp.join(""))
+       return(temp.join(""))
     }
+
+
+    // function getinner (i,j){       
+    //   console.log(i,j)
+    //    for (var  j= 1; j < 10; j++) {
+    //       //console.log(i , j, (allCells[i][j-1] !== undefined) ? allCells[i][j-1]: null)
+    //      // if(allCells[i][j-1] !== undefined){
+    //       //  console.log(i , j, (allCells[i].includes(j)? j : null))
+    //       let double=(j===3 || j===6 || j === 9)
+          
+    //      console.log ((((j===1)?"<table id=\"cell-" + i + "\">" :"") +
+    //                                  "<td id=\"cellInner-" + (j).toString() + "\">" + (allCells[i].includes(j)? j.toString() : "") + "</td>" + 
+    //                                  (double?"</tr><tr>":"") +
+    //                                  ((j===9)?"</table>" :"")))
+        
+    //    }
+    // }
 
 
   //   let cellValueStrings = new Array()
@@ -167,11 +194,11 @@ function getinner (q){
     //       //console.log(i , j, (allCells[i][j-1] !== undefined) ? allCells[i][j-1]: null)
     //      // if(allCells[i][j-1] !== undefined){
     //       //  console.log(i , j, (allCells[i].includes(j)? j : null))
-    //       let triples=(j===3 || j===6 || j === 9)
+    //       let double=(j===3 || j===6 || j === 9)
           
     //       let inner = ((j===1)?"<table id=\"cell-" + i + "\">" :"") +
     //                                 "<td id=\"cellInner-" + (j).toString() + "\">" + (allCells[i].includes(j)? j.toString() : "") + "</td>" + 
-    //                                 (triples?"</tr><tr>":"") +
+    //                                 (double?"</tr><tr>":"") +
     //                                 ((j===9)?"</table>" :"")
     //         console.log(inner)
     //      // }else{

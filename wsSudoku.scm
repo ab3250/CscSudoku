@@ -38,8 +38,22 @@
 
 
 
-(define (grid->string grid)    
-  (json->string  (list->vector `(((,(string->symbol "type") . "grid")) ((,(string->symbol "num") . ,(identity grid)))))))
+(define (grid->string grid)  
+  (fill-cells-affected-hash-table)
+  (fill-all-possibles-for-cell-hash-table grid)
+  (let ((var (print-all-possibles-for-cell-hash-table) ))  
+  (json->string  
+   ; (list->vector `(((,(string->symbol "type") . "grid")) ((,(string->symbol "num") . ,(identity grid)))) )
+   ; (list->vector `(((type . "poss")) ((num . ,(identity var)))))
+(list->vector `(((,(string->symbol "type") . "grid")) ((,(string->symbol "num") . ,(identity grid))) 
+              ((type . "poss")) ((num . ,(identity var)))              
+))
+
+
+  )))
+;;(((type . "poss")) ((num . ,(identity var)))))))
+; (define (grid->string grid)    
+;   (json->string  (list->vector `(((,(string->symbol "type") . "grid")) ((,(string->symbol "num") . ,(identity grid)))))))
 
 
 (define grid1 "530070000600195000098000060800060003400803001700020006060000280000419005000080079")
@@ -80,28 +94,28 @@
 
  (define (runthis grid)
    (fill-cells-affected-hash-table)  
-   (fill-all-possibles-for-cell-hash-table grid)
+   ;(fill-all-possibles-for-cell-hash-table grid)
    (solve (string-copy grid))   
    ;(range->list (split grid))
    (print-grid grid)
    ;(makeJSON)
-   (display (print-all-possibles-for-cell-hash-table))
-   (display (possibles->string))
-   (ws_send_txt globalfd (possibles->string) #f)
+   ;(display (print-all-possibles-for-cell-hash-table))
+   ;(display (possibles->string))
+  ; (display (grid->string grid2))
+   ;(ws_send_txt globalfd (possibles->string) #f)
    )
 
 (define (start)
-
+;(display (grid->string grid2))
 (let loop ()
   (if (not (equal? wsResponse #f))
     (begin 
-      ;(runthis grid2)
-      ;(getbuttons wsResponse)
+      ;(runthis grid2)      
       (processString wsResponse)
       ;(print wsResponse)
       
       ;
-      (clearResponse)
+     (clearResponse)
     )
   )
   (thread-sleep! .01)
@@ -112,8 +126,7 @@
     ((string=? msg "button1")(runthis grid1))
     ((string=? msg "button2")(runthis grid2))
     ((string=? msg "button3")(runthis grid3))
-    ((string=? msg "button4")(begin  (fill-all-possibles-for-cell-hash-table grid1) (thread-sleep! .01) (ws_send_txt globalfd (possibles->string) #f) 
-        (thread-sleep! .01) (ws_send_txt globalfd (grid->string grid1) #f)))
+    ((string=? msg "button4")(ws_send_txt globalfd (grid->string grid1) #f))
     ((string=? msg "button5")(ws_send_txt globalfd (grid->string grid2) #f))
     ((string=? msg "button6")(ws_send_txt globalfd (grid->string grid3) #f))))
 ;;;;;;;

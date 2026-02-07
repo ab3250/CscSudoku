@@ -30,12 +30,13 @@
         font-size: 8px;
         background-color: #FFFFFF;
         outline: none;
-      }
+      }cellinner-*
 
-    #grid #gridi table {
+    #grid #cellinner-* table {
         border: none;
       }
- #gridi td {
+
+ #grid #cellinnertd-* {
         border: none;
         text-align: center;
         vertical-align: middle;  
@@ -73,4 +74,7 @@
 #cell-54, #cell-63, #cell-72, #cell-57, #cell-66, #cell-75, #cell-60, #cell-69, #cell-78
 { border-left: 2px solid #000000; } 
 
-   
+/*#cellinner-0,  #cellinner-9,  #cellinner-18, #cellinner-3,  #cellinner-12, #cellinner-21, #cellinner-6,  #cellinner-15, #cellinner-24,
+#cellinner-27, #cellinner-36, #cellinner-45, #cellinner-30, #cellinner-39, #cellinner-48, #cellinner-33, #cellinner-42, #cellinner-51,
+#cellinner-54, #cellinner-63, #cellinner-72, #cellinner-57, #cellinner-66, #cellinner-75, #cellinner-60, #cellinner-69, #cellinner-78
+*/
