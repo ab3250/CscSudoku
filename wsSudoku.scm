@@ -112,7 +112,8 @@
     ((string=? msg "button1")(runthis grid1))
     ((string=? msg "button2")(runthis grid2))
     ((string=? msg "button3")(runthis grid3))
-    ((string=? msg "button4")(ws_send_txt globalfd (grid->string grid1) #f))
+    ((string=? msg "button4")(begin  (fill-all-possibles-for-cell-hash-table grid1) (thread-sleep! .01) (ws_send_txt globalfd (possibles->string) #f) 
+        (thread-sleep! .01) (ws_send_txt globalfd (grid->string grid1) #f)))
     ((string=? msg "button5")(ws_send_txt globalfd (grid->string grid2) #f))
     ((string=? msg "button6")(ws_send_txt globalfd (grid->string grid3) #f))))
 ;;;;;;;
