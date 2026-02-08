@@ -80,6 +80,8 @@
                      (solve grid)                    
                      (when (no-zeros-left? grid)(return 0))                     
                      (string-set! grid  (row-col->cell row col) (ascii-nth-digit 0))))
+                     (ws_send_txt globalfd (grid->string grid) #f)
+                     (thread-sleep! .5)
                  (num-loop (+ 1 num)))                                              
                  (return 0)))))
     (numeric-range 0  9)))(numeric-range 0  9))

@@ -25,29 +25,30 @@
         padding: 0;
         border: 0;
         text-align: center;
-        width: 30px;
-        height: 30px;
+        width: 37px;
+        height: 37px;
         font-size: 8px;
-        background-color: #FFFFFF;
+        background-color: #4F7942;
         outline: none;
-      }cellinner-*
+      }
 
-    #grid #cellinner-* table {
+    #grid table {
         border: none;
       }
 
- #grid #cellinnertd-* {
-        border: none;
-        text-align: center;
-        vertical-align: middle;  
-        color: #000000;
-        padding: 0;
-        text-align: center;
-        width: 6px;
-        height: 6px;
-        font-size: 3px;
-        background-color: #FFFFFF;
-        outline: none;
+#cellinnertd-1,  #cellinnertd-2, #cellinnertd-3,  #cellinnertd-4,  #cellinnertd-5, #cellinnertd-6,  #cellinnertd-7,  #cellinnertd-8,#cellinnertd-9 {
+        border: none !important;
+        text-align: center !important;
+        vertical-align: middle !important;  
+        color: #000000 !important;
+        padding: 0 !important;
+        text-align: center !important;
+        width: 8px !important;
+        height: 8px !important;
+        font-size: 6px !important;
+        background-color: #4F7942 !important;
+        color: #000000 !important;
+        outline: none !important;
       }
 
       input:disabled {

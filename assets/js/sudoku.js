@@ -127,7 +127,7 @@ function getinner (possArray,index){
           //  console.log(i , j, (allCells[i].includes(j)? j : null))
          let double=(j===3 || j===6 )
          temp.push((((j===1)?("<table id=\"cellinner-" + index + "\"><tbody><tr>") :"") + 
-                                     "<td id=\"cellInnertd-" + (j).toString() + "\">" + (possArray.includes(j)? j.toString() : "") + "</td>" + 
+                                     "<td id=\"cellinnertd-" + (j).toString() + "\">" + (possArray.includes(j)? j.toString() : "") + "</td>" + 
                                      ((j===3 || j===6)?"</tr><tr>":"") +
                                      ((j===9)?"</tr></tbody></table>" :"")) )
          
